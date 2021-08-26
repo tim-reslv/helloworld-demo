@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ues-sit-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  minReadySeconds: 5
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: ues-sit-deployment
+  template:
+    metadata:
+      labels:
+        app: ues-sit-deployment
+    spec:
+      hostAliases:
+      - ip: "172.31.199.127"
+        hostnames:
+        - "redis01"
+      - ip: "172.31.199.128"
+        hostnames:
+        - "redis02"
+      - ip: "172.31.199.129"
+        hostnames:
+        - "redis03"
+      - ip: "172.31.91.155"
+        hostnames:
+        - "quadplayapi"
+      containers:
+      - name: ues-sit-deployment
+        image: gcr.io/qa-anthos/entitlementcacheapi:latest
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 100m
+        volumeMounts:
+        - name: tz-config
+          mountPath: /etc/localtime
+        - name: ues-log
+          mountPath: /app/log
+      volumes:
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Hong_Kong
+      - name: ues-log
+        hostPath:
+          path: /var/log/k8s/entitlementcache
+      imagePullSecrets:
+      - name: gcr-json-key

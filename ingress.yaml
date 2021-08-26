@@ -1,0 +1,31 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: ues-gateway
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "ues-sit-deployment.34.96.206.204.nip.io"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: ues-ingress
+spec:
+  hosts:
+  - "ues-sit-deployment.34.96.206.204.nip.io"
+  gateways:
+  - ues-gateway
+  http:
+  - route:
+    - destination:
+        host: ues-sit-deployment
+        port:
+          number: 8080
