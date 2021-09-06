@@ -7,9 +7,6 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
-
-pool:
   name: Default
   demands:
    - agent.name -equals devopsagent
