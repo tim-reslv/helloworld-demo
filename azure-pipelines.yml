@@ -6,10 +6,13 @@
 trigger:
 - main
 
+#pool:
+#  name: Default
+#  demands:
+#   - agent.name -equals devopsagent
 pool:
-  name: Default
-  demands:
-   - agent.name -equals devopsagent
+  vmImage: ubuntu-latest
+  
 steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
